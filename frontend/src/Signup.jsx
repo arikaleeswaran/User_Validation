@@ -23,7 +23,7 @@ function Signup() {
         setErrors(Validation(values))
         if(errors.name === "" && errors.email === "" && errors.password === ""){
             console.log(values);
-            axios.post('http://localhost:8081/signup',values)
+            axios.put('http://localhost:8081/signup',values)
             .then(res => {
                 navigate('/')
             }).catch(err => console.log(err));
@@ -45,7 +45,7 @@ function Signup() {
                     {errors.email && <span className='text-danger'>{errors.email}</span>}
                 </div>
                 <div className='mb-3'>
-                    <label htmlFor="password">password</label>
+                    <label htmlFor="password">Password</label>
                     <input type="password" placeholder='Enter your password' name='password' className='form-control rounded-0' onChange={handleChange}/>
                     {errors.password && <span className='text-danger'>{errors.password}</span>}
                 </div>
