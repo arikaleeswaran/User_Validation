@@ -13,21 +13,52 @@ const db = mysql.createConnection({
     database:"signup"
 })
 
-app.post('/signup',(req,res)=>{
-    const query = "INSERT INTO login (`name`,`email`,`password`) VALUES(?)";
-    const value = [
-        req.body.name,
-        req.body.email,
-        req.body.password
-    ]
-
-    console.log(value);
+app.get('/',(req,res)=>{
+    console.log("Hello");
     
-    db.query(query,value,(err,data)=>{
+    return res.json()
+})
+
+app.put('/signup',(req,res)=>{
+
+    const {name, email,password} = req.body;
+
+    const query = "INSERT INTO login (name,email,password) VALUES(?,?,?)";
+    const values = [name,email,password]
+
+    console.log(values);
+    
+    db.query(query,values,(err,result)=>{
         if(err){
-            return res.json("Error")
+            console.error("Database insertion error:", err);
+            return res.status(500).json({ error: "Database insertion failed" });
         }
-        return res.json(data)
+        return res.status(201).json({ message: "User registered successfully", insertId: result.insertId });
+    })
+
+})
+
+app.post('/login',(req,res)=>{
+
+    const {email,password} = req.body;
+
+    const query = "SELECT * FROM login WHERE `email` = ? AND `password` = ?";
+    const values = [email,password]
+
+    console.log(values);
+    
+    db.query(query,values,(err,result)=>{
+        if(err){
+            console.error("Database insertion error:", err);
+            return res.status(500).json({ error: "Database insertion failed" });
+        }
+        // return res.status(201).json({ message: "User registered successfully", insertId: result.insertId });
+
+        if(result.length > 0){
+            return res.json("Success");
+        }else{
+            return res.json("Failed")
+        }
     })
 
 })
